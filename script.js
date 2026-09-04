@@ -20,12 +20,13 @@ function playSuccess() {
 }
 
 function onScanSuccess(decodedText, decodedResult) {
-  if (decodedText.startsWith("METADATA") && chunksNum <= 0) {
-    chunksNum = JSON.parse(decodedText.replace("METADATA", "")).chunks;
+  let chunk = JSON.parse(decodedText);
+
+  if (chunk?.id && chunksNum <= 0) {
+    chunksNum = chunk.chunks;
   }
 
-  if (chunksNum > 0 && !decodedText.startsWith("METADATA")) {
-    let chunk = JSON.parse(decodedText);
+  if (chunksNum > 0 && !chunk?.id) {
     chunks[chunk.seq] = chunk.value;
   }
 
