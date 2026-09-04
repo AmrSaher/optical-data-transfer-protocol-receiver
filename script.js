@@ -9,7 +9,9 @@ const html5QrcodeScanner = new Html5QrcodeScanner(
 );
 
 let chunks = {};
+let id = null;
 let chunksNum = 0;
+let payload = null;
 
 function playSuccess() {
     SUCCESS.currentTime = 0; 
@@ -23,7 +25,16 @@ function onScanSuccess(decodedText, decodedResult) {
   let chunk = JSON.parse(decodedText);
 
   if (chunk?.id && chunksNum <= 0) {
+    if (id != null && id != chunk.id) {
+      chunks = {};
+      payload = null;
+      document.querySelector("#payload").value = "";
+    } else if (id != null && id == chunk.id && payload != null) {
+      return;
+    }
+
     chunksNum = chunk.chunks;
+    id = chunk.id;
   }
 
   if (chunksNum > 0 && !chunk?.id) {
@@ -31,7 +42,8 @@ function onScanSuccess(decodedText, decodedResult) {
   }
 
   if (Object.keys(chunks).length == chunksNum && chunksNum > 0) {
-    document.querySelector("#payload").value = Object.values(chunks).join("");
+    let payload = Object.values(chunks).join("");
+    document.querySelector("#payload").value = payload;
     playSuccess();
   }
 }
