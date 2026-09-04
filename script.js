@@ -1,27 +1,40 @@
-// Initialize the scanner with the target div ID
+const SUCCESS = new Audio("./assets/done.mp3");
+
 const html5QrcodeScanner = new Html5QrcodeScanner(
   "reader",
   {
-    fps: 10, // Frames per second to scan
-    qrbox: { width: 250, height: 250 }, // Scanning box overlay
+    fps: 10, 
+    qrbox: { width: 250, height: 250 },
   },
-  /* verbose= */ false,
 );
 
-// Define what happens when a barcode is successfully read
+let chunks = {};
+let chunksNum = 0;
+
+function playSuccess() {
+    SUCCESS.currentTime = 0; 
+    
+    SUCCESS.play().catch(error => {
+        console.warn("Audio playback prevented by browser policy. User must interact with the page first.", error);
+    });
+}
+
 function onScanSuccess(decodedText, decodedResult) {
-  console.log(`Barcode scanned: ${decodedText}`);
-  alert(`Scanned: ${decodedText}`);
+  if (decodedText.startsWith("METADATA") && chunksNum <= 0) {
+    chunksNum = JSON.parse(decodedText.replace("METADATA", "")).chunks;
+  }
 
-  // Optional: Stop scanning after the first successful read
-  // html5QrcodeScanner.clear();
+  if (chunksNum > 0 && !decodedText.startsWith("METADATA")) {
+    let chunk = JSON.parse(decodedText);
+    chunks[chunk.seq] = chunk.value;
+  }
+
+  if (Object.keys(chunks).length == chunksNum && chunksNum > 0) {
+    document.querySelector("#payload").value = Object.values(chunks).join("");
+    playSuccess();
+  }
 }
 
-// Define what happens on scan failure (usually ignored)
-function onScanFailure(error) {
-  // Runs constantly as the camera searches for a barcode.
-  // Leave empty or use for debugging.
-}
+function onScanFailure(error) {}
 
-// Start rendering the scanner
 html5QrcodeScanner.render(onScanSuccess, onScanFailure);

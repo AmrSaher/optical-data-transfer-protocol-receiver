@@ -5,12 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Optical Data Transfer Protocol (ODTP) - Receiver</title>
 
+    <style>
+        .hide {
+            display: none;
+        }
+    </style>
+
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
-<body>
-    <div id="reader" style="width: 500px; margin: auto;"></div>
+<body class="bg-[#ececec]">
+    <header class="w-full bg-[#333333] p-3">
+        <h1 class="font-bold text-lg text-[#FF6600]">ODTP - Receiver</h1>
+    </header>
+
+    <main class="w-full py-5 px-5">
+        <div class="w-full max-w-[900px] m-auto border border-[#CCC]">
+            <header class="w-full py-2 px-3 bg-[#f0f0f0] border-b border-[#CCC]">
+                <h2 class="font-bold">Scan</h2>
+            </header>
+            <div id="reader" class="w-full" ></div>
+        </div>
+        <div class="w-full max-w-[900px] m-auto border border-[#CCC] mt-3">
+            <header class="w-full py-2 px-3 bg-[#f0f0f0] border-b border-[#CCC]">
+                <h2 class="font-bold">Payload</h2>
+            </header>
+            <div class="w-full p-3">
+                <textarea id="payload" class="border border-[#CCC] py-1 px-3 w-full" disabled placeholder="Received Payload"></textarea>
+            </div>
+        </div>
+    </main>
     
-    <script src="/script.js"></script>
+    <script src="./script.js"></script>
 </body>
 </html>
